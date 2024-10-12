@@ -4,7 +4,7 @@
 
 #### Team Name: Obamacare
   
-#### Your teamâ€™s hackathon idea in One sentence:
+#### Your team's hackathon idea in One sentence:
 ##### Gamification of the healthcare system, including a raffle system, AI celebrity accessibility services, AI customer support, and a variety of options encouraging the elderly, children, and marginalized minorities to work towards their health goals.
 
 
