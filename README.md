@@ -29,7 +29,7 @@
 - [ ] Health and Mental Wellness Support
 > - Tools to provide remote mental health support, connect to mobile healthcare providers, or manage chronic conditions common in homeless populations using mobile devices.
 > - Question: How can we create tools or mobile applications that deliver remote mental health care, help manage chronic health conditions, or connect unhoused individuals with trusted health professionals?
-- [ x ] Housing and Employment Pathways
+- [x] Housing and Employment Pathways
 > - Web platforms that connect homeless individuals to affordable housing opportunities, job training programs, or employment resources.
 > - Question: What digital web platforms or systems can help individuals experiencing homelessness navigate the path toward stable housing and employment, including skills training, job placement, and housing referrals? 
 - [ ] Safety and Community Engagement
@@ -39,7 +39,7 @@
 > - Use of geospatial and demographic data to better understand homeless population trends, optimize resource allocation, and support policy advocacy.
 > - Question: How can we use geospatial data, census data, and AI to map trends in homelessness, identify service gaps, and support equitable decision making and public advocacy
 - [ ] Other Possible Topics
-> - [ x ] Improving digital equity and resource accessibility
+> - [x] Improving digital equity and resource accessibility
 > - Helping youth homelessness and at-risk populations
 > - Providing mobile health clinics and telehealth expansion kits
 > - Increasing climate resilience for unhoused communities
