@@ -10,6 +10,7 @@ from app.routers import lookup as lookup_router
 from app.routers import qrcode_gen as qrcode_router
 from app.routers import auth as auth_router
 from app.routers import documents as documents_router
+from app.routers import admin_auth
 from app import models  # ensure metadata is populated
 
 @asynccontextmanager
@@ -35,6 +36,7 @@ app.include_router(lookup_router.router, prefix=settings.api_v1_prefix)
 app.include_router(qrcode_router.router, prefix=settings.api_v1_prefix)
 app.include_router(auth_router.router, prefix=settings.api_v1_prefix)
 app.include_router(documents_router.router, prefix=settings.api_v1_prefix)
+app.include_router(admin_auth.router)
 
 @app.get("/")
 def root():
