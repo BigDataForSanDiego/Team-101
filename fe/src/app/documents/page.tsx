@@ -202,7 +202,7 @@ export default function DocumentsPage() {
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
                   placeholder="e.g., My SSN Card"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                 />
               </div>
               <div>
@@ -210,7 +210,7 @@ export default function DocumentsPage() {
                 <input
                   type="file"
                   onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
                 />
               </div>
             </div>
@@ -275,7 +275,7 @@ export default function DocumentsPage() {
                           type="text"
                           value={newName}
                           onChange={(e) => setNewName(e.target.value)}
-                          className="w-full px-2 py-1 text-sm border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-2 py-1 text-sm border border-blue-300 rounded focus:ring-2 focus:ring-blue-500 text-gray-900"
                           autoFocus
                         />
                         <div className="flex gap-1 mt-1">

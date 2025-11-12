@@ -174,7 +174,7 @@ export default function LoginPage() {
                 value={qrCode}
                 onChange={(e) => setQrCode(e.target.value)}
                 placeholder="Paste or type your QR code here"
-                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition font-mono text-sm"
+                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition font-mono text-sm text-gray-900"
                 required
               />
               <button
