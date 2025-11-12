@@ -1,59 +1,12 @@
-import base64
-import json
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models
 from app.schemas import ParticipantCreate, ParticipantLogin, AuthResponse, ParticipantOut
 from app.security import new_qr_uid
+from app.face_recognition import encode_face, verify_face
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-
-def encode_face_from_base64(face_image_b64: str) -> str:
-    """Convert base64 image to face encoding. In production, use face_recognition library."""
-    try:
-        # Decode base64 image - remove data URL prefix if present
-        if ',' in face_image_b64:
-            image_data = base64.b64decode(face_image_b64.split(',')[1])
-        else:
-            image_data = base64.b64decode(face_image_b64)
-        
-        # For demo: create a consistent hash-based encoding
-        # In production: use face_recognition.face_encodings()
-        import hashlib
-        face_hash = hashlib.sha256(image_data).hexdigest()
-        
-        # Return as JSON string for storage
-        return json.dumps({"encoding": face_hash, "method": "demo", "size": len(image_data)})
-    except Exception as e:
-        raise HTTPException(400, f"Invalid face image: {str(e)}")
-
-def compare_face_encodings(encoding1: str, encoding2: str) -> bool:
-    """Compare two face encodings. In production, use face_recognition.compare_faces()."""
-    try:
-        enc1 = json.loads(encoding1)
-        enc2 = json.loads(encoding2)
-        
-        # Compare the hash encodings
-        hash1 = enc1.get("encoding")
-        hash2 = enc2.get("encoding")
-        
-        if hash1 == hash2:
-            return True
-            
-        # For demo: also check if images are similar size (within 10%)
-        size1 = enc1.get("size", 0)
-        size2 = enc2.get("size", 0)
-        if size1 and size2:
-            size_diff = abs(size1 - size2) / max(size1, size2)
-            # If exact hash match failed but sizes are very close, might be same image with slight compression
-            if size_diff < 0.1 and hash1[:32] == hash2[:32]:  # First half of hash matches
-                return True
-                
-        return False
-    except Exception as e:
-        print(f"Encoding comparison error: {e}")
-        return False
 
 @router.post("/register", response_model=AuthResponse)
 def register_participant(payload: ParticipantCreate, db: Session = Depends(get_db)):
@@ -72,7 +25,10 @@ def register_participant(payload: ParticipantCreate, db: Session = Depends(get_d
     # Process face encoding if provided
     face_encoding = None
     if payload.face_image:
-        face_encoding = encode_face_from_base64(payload.face_image)
+        try:
+            face_encoding = encode_face(payload.face_image)
+        except Exception as e:
+            raise HTTPException(400, f"Face encoding failed: {str(e)}")
     
     # Create participant
     participant = models.Participant(
@@ -120,22 +76,36 @@ def login_participant(payload: ParticipantLogin, db: Session = Depends(get_db)):
     # Try face ID login
     if payload.face_image:
         try:
-            login_encoding = encode_face_from_base64(payload.face_image)
-            
             # Find matching participant by face encoding
             participants = db.query(models.Participant).filter(
                 models.Participant.face_encoding.isnot(None)
             ).all()
             
+            print(f"Found {len(participants)} participants with face encodings")
+            
+            if not participants:
+                return AuthResponse(
+                    success=False,
+                    message="No registered faces found. Please register first."
+                )
+            
             for p in participants:
-                if compare_face_encodings(p.face_encoding, login_encoding):
-                    return AuthResponse(
-                        success=True,
-                        participant=ParticipantOut.model_validate(p),
-                        message="Login successful via Face ID"
-                    )
+                print(f"Checking participant {p.id}: {p.display_name}")
+                try:
+                    verified, distance = verify_face(payload.face_image, p.face_encoding)
+                    print(f"  Distance: {distance:.4f}, Verified: {verified}")
+                    if verified:
+                        return AuthResponse(
+                            success=True,
+                            participant=ParticipantOut.model_validate(p),
+                            message=f"Login successful via Face ID"
+                        )
+                except Exception as face_err:
+                    print(f"  Error verifying face: {face_err}")
+                    continue
                     
         except Exception as e:
+            print(f"Face login error: {e}")
             return AuthResponse(
                 success=False,
                 message=f"Face recognition failed: {str(e)}"
