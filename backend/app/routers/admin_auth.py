@@ -32,6 +32,15 @@ class AdminOut(BaseModel):
     class Config:
         from_attributes = True  # pydantic v2
 
+class AdminUpdateMe(BaseModel):
+    email: EmailStr
+    phone: str | None = None
+
+class AdminChangePassword(BaseModel):
+    email: EmailStr
+    old_password: str
+    new_password: str
+
 # ---------- Endpoints ----------
 
 @router.post("/admins", response_model=AdminOut, status_code=201)
@@ -94,3 +103,48 @@ def list_admins(
         q = q.filter(AdminUser.org_id == org_id)
     items = q.order_by(AdminUser.id.desc()).offset(offset).limit(limit).all()
     return {"items": items}
+
+
+@router.patch("/me")
+def update_me(payload: AdminUpdateMe, db: Session = Depends(get_db)):
+    """Update admin’s phone or (future) profile info."""
+    user = db.query(AdminUser).filter(AdminUser.email == payload.email).first()
+    if not user:
+        raise HTTPException(404, "Admin not found")
+
+    if payload.phone is not None:
+        user.phone = payload.phone
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return {
+        "ok": True,
+        "user": {
+            "id": user.id,
+            "org_id": user.org_id,
+            "email": user.email,
+            "phone": user.phone,
+            "role": user.role,
+            "is_active": user.is_active,
+        },
+    }
+
+
+@router.post("/change-password")
+def change_password(payload: AdminChangePassword, db: Session = Depends(get_db)):
+    """Change admin password (requires old password)."""
+    user = db.query(AdminUser).filter(
+        AdminUser.email == payload.email,
+        AdminUser.is_active == True,
+    ).first()
+    if not user:
+        raise HTTPException(404, "Admin not found")
+
+    if not bcrypt.checkpw(payload.old_password.encode(), user.password_hash.encode()):
+        raise HTTPException(401, "Old password incorrect")
+
+    new_hash = bcrypt.hashpw(payload.new_password.encode(), bcrypt.gensalt()).decode()
+    user.password_hash = new_hash
+    db.add(user)
+    db.commit()
+    return {"ok": True}

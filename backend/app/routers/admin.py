@@ -55,3 +55,19 @@ def get_participant_qr(participant_id: int, db: Session = Depends(get_db)):
         "qr_active": p.qr_active,
         "deep_link": f"/api/v1/lookup/qr/{p.qr_uid}",
     }
+
+@router.get("/orgs")
+def list_orgs(limit: int = 100, offset: int = 0, db: Session = Depends(get_db)):
+    items = db.query(models.Organization)\
+              .order_by(models.Organization.id.desc())\
+              .offset(offset).limit(limit).all()
+    return {"items": items}
+
+@router.get("/participants")
+def list_participants(org_id: int | None = None, limit: int = 100, offset: int = 0, db: Session = Depends(get_db)):
+    q = db.query(models.Participant)
+    if org_id is not None:
+        q = q.filter(models.Participant.org_id == org_id)
+    items = q.order_by(models.Participant.id.desc())\
+             .offset(offset).limit(limit).all()
+    return {"items": items}

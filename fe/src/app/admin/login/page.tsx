@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
   const r = useRouter();
-  const [email, setEmail] = useState("admin@relink.org");
-  const [password, setPassword] = useState("Admin@1234");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
