@@ -65,6 +65,61 @@ def get_participant_qr(participant_id: int, db: Session = Depends(get_db)):
         "deep_link": f"/api/v1/lookup/qr/{p.qr_uid}",
     }
 
+@router.get("/users")
+def get_admin_users(db: Session = Depends(get_db)):
+    """Get all admin users"""
+    admins = db.query(models.AdminUser).all()
+    return [{
+        "id": a.id,
+        "org_id": a.org_id,
+        "email": a.email,
+        "phone": a.phone,
+        "role": a.role,
+        "is_active": a.is_active,
+        "created_at": a.created_at
+    } for a in admins]
+
+@router.get("/participants")
+def get_all_participants(db: Session = Depends(get_db)):
+    """Get all participants"""
+    participants = db.query(models.Participant).all()
+    return participants
+
+@router.get("/employers")
+def get_employers(db: Session = Depends(get_db)):
+    """Get all employers"""
+    employers = db.query(models.Employer).all()
+    return employers
+
+class EmployerCreate(BaseModel):
+    company_name: str
+    contact_name: str | None = None
+    email: str
+    phone: str | None = None
+    password: str
+
+@router.post("/employers")
+def create_employer(payload: EmployerCreate, db: Session = Depends(get_db)):
+    """Create employer account"""
+    existing = db.query(models.Employer).filter_by(email=payload.email).first()
+    if existing:
+        raise HTTPException(400, "Email already exists")
+    
+    password_hash = hashlib.sha256(payload.password.encode()).hexdigest()
+    
+    employer = models.Employer(
+        company_name=payload.company_name,
+        contact_name=payload.contact_name,
+        email=payload.email,
+        phone=payload.phone,
+        password_hash=password_hash,
+        is_active=True
+    )
+    db.add(employer)
+    db.commit()
+    db.refresh(employer)
+    return employer
+
 @router.post("/users")
 def create_admin_user(payload: AdminUserCreate, db: Session = Depends(get_db)):
     # Check if org exists
