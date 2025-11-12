@@ -10,6 +10,9 @@ from app.routers import lookup as lookup_router
 from app.routers import qrcode_gen as qrcode_router
 from app.routers import auth as auth_router
 from app.routers import documents as documents_router
+from app.routers import trainings as trainings_router
+from app.routers import certifications as certifications_router
+from app.routers import announcements as announcements_router
 from app import models  # ensure metadata is populated
 
 @asynccontextmanager
@@ -35,6 +38,9 @@ app.include_router(lookup_router.router, prefix=settings.api_v1_prefix)
 app.include_router(qrcode_router.router, prefix=settings.api_v1_prefix)
 app.include_router(auth_router.router, prefix=settings.api_v1_prefix)
 app.include_router(documents_router.router, prefix=settings.api_v1_prefix)
+app.include_router(trainings_router.router, prefix=settings.api_v1_prefix)
+app.include_router(certifications_router.router, prefix=settings.api_v1_prefix)
+app.include_router(announcements_router.router, prefix=settings.api_v1_prefix)
 
 @app.get("/")
 def root():
