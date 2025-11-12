@@ -18,7 +18,7 @@ const httpsOptions = {
 };
 
 const apiProxy = createProxyMiddleware({
-  target: 'http://localhost:8000',
+  target: 'http://localhost:8000/',
   changeOrigin: true,
   secure: false,
   logLevel: 'debug',

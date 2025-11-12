@@ -52,7 +52,7 @@ export default function DocumentsPage() {
     
     setLoading(true);
     try {
-      const response = await fetch(`/api/v1/documents/participant/${pid}`);
+      const response = await fetch(`http://localhost:8000/api/v1/documents/participant/${pid}`);
       if (response.ok) {
         const data = await response.json();
         setDocuments(data);
@@ -85,7 +85,7 @@ export default function DocumentsPage() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('/api/v1/documents/upload', {
+      const response = await fetch('http://localhost:8000/api/v1/documents/upload', {
         method: 'POST',
         body: formData
       });
@@ -107,7 +107,7 @@ export default function DocumentsPage() {
 
   const handleDownload = async (docId: number, fileName: string) => {
     try {
-      const response = await fetch(`/api/v1/documents/download/${docId}`);
+      const response = await fetch(`http://localhost:8000/api/v1/documents/download/${docId}`);
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -128,7 +128,7 @@ export default function DocumentsPage() {
     if (!confirm('Are you sure you want to delete this document?')) return;
 
     try {
-      const response = await fetch(`/api/v1/documents/${docId}`, {
+      const response = await fetch(`http://localhost:8000/api/v1/documents/${docId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -278,7 +278,7 @@ export default function DocumentsPage() {
                                 const formData = new FormData();
                                 formData.append('new_name', newName);
                                 
-                                const response = await fetch(`/api/v1/documents/${doc.id}/rename`, {
+                                const response = await fetch(`http://localhost:8000/api/v1/documents/${doc.id}/rename`, {
                                   method: 'PUT',
                                   body: formData
                                 });
