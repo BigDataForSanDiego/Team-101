@@ -14,11 +14,30 @@ class TrainingRegister(BaseModel):
 
 @router.get("/sessions")
 def get_all_training_sessions(db: Session = Depends(get_db)):
-    """Get all available training sessions"""
-    sessions = db.query(models.TrainingSession).filter(
-        models.TrainingSession.training_date > datetime.now()
-    ).all()
+    """Get all training sessions"""
+    sessions = db.query(models.TrainingSession).all()
     return sessions
+
+class TrainingSessionCreate(BaseModel):
+    title: str
+    description: str | None = None
+    location: str | None = None
+    training_date: str
+
+@router.post("/sessions")
+def create_training_session(payload: TrainingSessionCreate, db: Session = Depends(get_db)):
+    """Create a new training session"""
+    session = models.TrainingSession(
+        title=payload.title,
+        description=payload.description,
+        location=payload.location,
+        training_date=payload.training_date,
+        created_by_admin=None
+    )
+    db.add(session)
+    db.commit()
+    db.refresh(session)
+    return session
 
 @router.get("/sessions/available/{participant_id}")
 def get_available_sessions(participant_id: int, db: Session = Depends(get_db)):

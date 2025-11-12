@@ -5,8 +5,14 @@ from app import models
 from app.schemas import ParticipantCreate, ParticipantLogin, AuthResponse, ParticipantOut
 from app.security import new_qr_uid
 from app.face_recognition import encode_face, verify_face
+from pydantic import BaseModel
+import hashlib
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+class AdminLoginRequest(BaseModel):
+    email: str
+    password: str
 
 @router.post("/register", response_model=AuthResponse)
 def register_participant(payload: ParticipantCreate, db: Session = Depends(get_db)):
@@ -128,4 +134,49 @@ def get_participant_qr(participant_id: int, db: Session = Depends(get_db)):
         "qr_uid": participant.qr_uid,
         "qr_active": participant.qr_active,
         "display_name": participant.display_name
+    }
+
+@router.post("/admin/login")
+def admin_login(payload: AdminLoginRequest, db: Session = Depends(get_db)):
+    """Admin login endpoint"""
+    admin = db.query(models.AdminUser).filter_by(email=payload.email).first()
+    
+    if not admin:
+        raise HTTPException(401, "Invalid credentials")
+    
+    password_hash = hashlib.sha256(payload.password.encode()).hexdigest()
+    
+    if admin.password_hash != password_hash:
+        raise HTTPException(401, "Invalid credentials")
+    
+    if not admin.is_active:
+        raise HTTPException(403, "Account is inactive")
+    
+    return {
+        "id": admin.id,
+        "email": admin.email,
+        "role": admin.role,
+        "org_id": admin.org_id
+    }
+
+@router.post("/employer/login")
+def employer_login(payload: AdminLoginRequest, db: Session = Depends(get_db)):
+    """Employer login endpoint"""
+    employer = db.query(models.Employer).filter_by(email=payload.email).first()
+    
+    if not employer:
+        raise HTTPException(401, "Invalid credentials")
+    
+    password_hash = hashlib.sha256(payload.password.encode()).hexdigest()
+    
+    if employer.password_hash != password_hash:
+        raise HTTPException(401, "Invalid credentials")
+    
+    if not employer.is_active:
+        raise HTTPException(403, "Account is inactive")
+    
+    return {
+        "id": employer.id,
+        "email": employer.email,
+        "company_name": employer.company_name
     }
