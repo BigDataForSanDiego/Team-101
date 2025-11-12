@@ -27,7 +27,7 @@ export default function AnnouncementsPage() {
   const fetchAnnouncements = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/v1/announcements');
+      const response = await fetch('http://localhost:8000/api/v1/announcements');
       if (response.ok) {
         const data = await response.json();
         setAnnouncements(data);

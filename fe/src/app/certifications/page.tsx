@@ -29,7 +29,7 @@ export default function CertificationsPage() {
     if (!user) return;
     setLoading(true);
     try {
-      const response = await fetch(`/api/v1/certifications/participant/${user.id}`);
+      const response = await fetch(`http://localhost:8000/api/v1/certifications/participant/${user.id}`);
       if (response.ok) {
         const data = await response.json();
         setCertifications(data);
