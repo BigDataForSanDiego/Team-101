@@ -204,27 +204,42 @@ class Certification(Base):
 
 
 # -----------------------------
-# Training/Workshops
+# Training Sessions (available trainings)
 # -----------------------------
-class Training(Base):
-    __tablename__ = "trainings"
+class TrainingSession(Base):
+    __tablename__ = "training_sessions"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    location: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    training_date: Mapped[str] = mapped_column(TIMESTAMP, nullable=False)
+    created_by_admin: Mapped[int | None] = mapped_column(
+        ForeignKey("admin_users.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    created_at: Mapped[str] = mapped_column(
+        TIMESTAMP, server_default=func.current_timestamp(), nullable=False, index=True
+    )
+
+
+# -----------------------------
+# Training Registrations (participant enrollments)
+# -----------------------------
+class TrainingRegistration(Base):
+    __tablename__ = "training_registrations"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     participant_id: Mapped[int] = mapped_column(
         ForeignKey("participants.id", ondelete="CASCADE"), nullable=False, index=True
     )
-    title: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    location: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    training_date: Mapped[str] = mapped_column(TIMESTAMP, nullable=False)
+    training_session_id: Mapped[int] = mapped_column(
+        ForeignKey("training_sessions.id", ondelete="CASCADE"), nullable=False, index=True
+    )
     status: Mapped[str] = mapped_column(
         Enum("REGISTERED", "ATTENDED", "COMPLETED", "CANCELLED", name="training_status_enum"),
         default="REGISTERED",
         nullable=False
     )
-    registered_by_admin: Mapped[int | None] = mapped_column(
-        ForeignKey("admin_users.id", ondelete="SET NULL"), nullable=True, index=True
-    )
-    created_at: Mapped[str] = mapped_column(
+    registered_at: Mapped[str] = mapped_column(
         TIMESTAMP, server_default=func.current_timestamp(), nullable=False, index=True
     )

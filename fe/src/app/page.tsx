@@ -47,7 +47,7 @@ export default function Home() {
             <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-auto">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">Welcome back, {user.display_name}!</h2>
               <p className="text-gray-600 mb-4">You are successfully logged in</p>
-              <Link href="/dashboard" className="inline-block py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
+              <Link href="/dashboard" className="inline-block py-3 px-6 text-white font-semibold rounded-lg transition" style={{ backgroundColor: 'rgba(0, 0, 58, 0.95)' }}>
                 Go to Dashboard
               </Link>
             </div>

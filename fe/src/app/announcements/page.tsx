@@ -16,11 +16,9 @@ export default function AnnouncementsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      window.location.replace('/login');
-      return;
+    if (user) {
+      fetchAnnouncements();
     }
-    fetchAnnouncements();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -39,7 +37,19 @@ export default function AnnouncementsPage() {
     }
   };
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <section className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 py-12 px-4">
+        <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Please Login</h1>
+          <p className="text-gray-600 mb-6">You need to login to access announcements</p>
+          <a href="/login" className="inline-block py-3 px-6 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition">
+            Go to Login
+          </a>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 py-12 px-4">

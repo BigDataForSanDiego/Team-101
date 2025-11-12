@@ -17,11 +17,9 @@ export default function CertificationsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      window.location.replace('/login');
-      return;
+    if (user) {
+      fetchCertifications();
     }
-    fetchCertifications();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -41,7 +39,19 @@ export default function CertificationsPage() {
     }
   };
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <section className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 py-12 px-4">
+        <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Please Login</h1>
+          <p className="text-gray-600 mb-6">You need to login to access certifications</p>
+          <a href="/login" className="inline-block py-3 px-6 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition">
+            Go to Login
+          </a>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 py-12 px-4">

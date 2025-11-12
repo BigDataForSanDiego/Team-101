@@ -32,6 +32,9 @@ export default function DocumentsPage() {
   const [customName, setCustomName] = useState('');
   const [editingDoc, setEditingDoc] = useState<number | null>(null);
   const [newName, setNewName] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [docToDelete, setDocToDelete] = useState<Document | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -132,11 +135,17 @@ export default function DocumentsPage() {
     }
   };
 
-  const handleDelete = async (docId: number) => {
-    if (!confirm('Are you sure you want to delete this document?')) return;
+  const openDeleteModal = (doc: Document) => {
+    setDocToDelete(doc);
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = async () => {
+    if (!docToDelete) return;
+    setDeleting(true);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/documents/${docId}`, {
+      const response = await fetch(`http://localhost:8000/api/v1/documents/${docToDelete.id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -147,14 +156,16 @@ export default function DocumentsPage() {
       
       if (response.ok && result.success) {
         setMessage('Document deleted successfully!');
-        // Remove from local state immediately
-        setDocuments(docs => docs.filter(d => d.id !== docId));
+        setDocuments(docs => docs.filter(d => d.id !== docToDelete.id));
+        setShowDeleteModal(false);
       } else {
         setMessage(`Delete failed: ${result.message || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('Delete error:', error);
       setMessage('Delete failed: Network error');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -207,11 +218,21 @@ export default function DocumentsPage() {
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Select File</label>
-                <input
-                  type="file"
-                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
-                />
+                <label className="w-full cursor-pointer">
+                  <input
+                    type="file"
+                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                    className="hidden"
+                  />
+                  <div className="w-full px-4 py-3 border-2 border-dashed border-blue-300 rounded-lg hover:border-blue-500 transition bg-blue-50 hover:bg-blue-100 flex items-center justify-center gap-2">
+                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <span className="text-sm font-medium text-blue-700">
+                      {selectedFile ? selectedFile.name : 'Choose File'}
+                    </span>
+                  </div>
+                </label>
               </div>
             </div>
             <button
@@ -257,7 +278,7 @@ export default function DocumentsPage() {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            handleDelete(doc.id);
+                            openDeleteModal(doc);
                           }}
                           className="text-red-500 hover:text-red-700 p-1"
                           title="Delete"
@@ -344,6 +365,46 @@ export default function DocumentsPage() {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && docToDelete && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-scale-in">
+            <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full">
+              <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">Delete Document?</h3>
+            <div className="bg-red-50 rounded-xl p-4 mb-6 border border-red-200">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-3xl">{getDocumentIcon(docToDelete.document_type)}</span>
+                <div>
+                  <h4 className="font-bold text-gray-800">{getDocumentLabel(docToDelete.document_type)}</h4>
+                  <p className="text-sm text-gray-600">{docToDelete.document_name}</p>
+                </div>
+              </div>
+            </div>
+            <p className="text-gray-600 mb-6 text-center">This action cannot be undone. Are you sure you want to delete this document?</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleting}
+                className="flex-1 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 disabled:opacity-50 transition"
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

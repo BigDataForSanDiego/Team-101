@@ -28,7 +28,7 @@ export default function LoginPage() {
     setMessage('');
     
     try {
-      const response = await fetch('https://localhost:8000/api/v1/auth/login', {
+      const response = await fetch('http://localhost:8000/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ qr_uid: code.trim() })
@@ -63,7 +63,7 @@ export default function LoginPage() {
   const handleFaceLogin = async (imageData: string) => {
     setLoading(true);
     try {
-      const response = await fetch('https://localhost:8000/api/v1/auth/login', {
+      const response = await fetch('http://localhost:8000/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ face_image: imageData })

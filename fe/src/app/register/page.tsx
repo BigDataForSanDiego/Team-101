@@ -33,7 +33,7 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      const response = await fetch('https://localhost:8000/api/v1/auth/register', {
+      const response = await fetch('http://localhost:8000/api/v1/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -82,7 +82,7 @@ export default function RegisterPage() {
             <h3 className="text-lg font-bold text-gray-800 mb-4">Your QR Code</h3>
             <div className="bg-white p-4 rounded-lg inline-block">
               <img 
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrCode}`}
+                src={`http://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrCode}`}
                 alt="QR Code"
                 className="w-48 h-48 mx-auto"
               />
