@@ -175,6 +175,7 @@ class Announcement(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
+    expiry_date: Mapped[str | None] = mapped_column(TIMESTAMP, nullable=True)
     created_by_admin: Mapped[int | None] = mapped_column(
         ForeignKey("admin_users.id", ondelete="SET NULL"), nullable=True, index=True
     )
