@@ -34,17 +34,25 @@ export default function DocumentsPage() {
   const [newName, setNewName] = useState('');
 
   useEffect(() => {
-    if (!user) {
-      window.location.replace('/login');
-      return;
+    if (user) {
+      setParticipantId(user.id.toString());
+      fetchDocuments(user.id.toString());
     }
-    setParticipantId(user.id.toString());
-    fetchDocuments(user.id.toString());
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   if (!user) {
-    return null;
+    return (
+      <section className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+        <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Please Login</h1>
+          <p className="text-gray-600 mb-6">You need to login to access your documents</p>
+          <a href="/login" className="inline-block py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
+            Go to Login
+          </a>
+        </div>
+      </section>
+    );
   }
 
   const fetchDocuments = async (pid: string) => {

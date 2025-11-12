@@ -17,7 +17,7 @@ export default function LoginPage() {
   // Redirect if already logged in (only on mount)
   useEffect(() => {
     if (user) {
-      window.location.replace('/documents');
+      window.location.replace('/dashboard');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -94,7 +94,7 @@ export default function LoginPage() {
       localStorage.setItem('user', JSON.stringify(participant));
       // Force page reload to pick up auth context
       setTimeout(() => {
-        window.location.replace('/documents');
+        window.location.replace('/dashboard');
       }, 1500);
     }
   }, [participant]);
