@@ -1,33 +1,30 @@
-#!/usr/bin/env python3
 import mysql.connector
-from app.config import settings
+from dotenv import load_dotenv
+import os
 
-# Parse database URL
-db_url = settings.database_url.replace("mysql+mysqlconnector://", "")
-user_pass, host_db = db_url.split("@")
+load_dotenv()
+
+# Parse DATABASE_URL
+db_url = os.getenv("DATABASE_URL")
+# mysql+mysqlconnector://relink:relinkpass@127.0.0.1:3306/relink
+
+parts = db_url.split("://")[1]
+user_pass, host_db = parts.split("@")
 user, password = user_pass.split(":")
 host_port, database = host_db.split("/")
-host, port = host_port.split(":")
+host = host_port.split(":")[0]
 
 conn = mysql.connector.connect(
     host=host,
-    port=int(port),
     user=user,
     password=password,
     database=database
 )
 
 cursor = conn.cursor()
+cursor.execute("ALTER TABLE participants MODIFY COLUMN face_encoding LONGTEXT;")
+conn.commit()
+cursor.close()
+conn.close()
 
-try:
-    cursor.execute("ALTER TABLE participants ADD COLUMN face_encoding TEXT NULL")
-    conn.commit()
-    print("✓ Successfully added face_encoding column")
-except mysql.connector.errors.DatabaseError as e:
-    if "Duplicate column name" in str(e):
-        print("✓ Column face_encoding already exists")
-    else:
-        print(f"✗ Error: {e}")
-finally:
-    cursor.close()
-    conn.close()
+print("✓ Successfully updated face_encoding column to LONGTEXT")

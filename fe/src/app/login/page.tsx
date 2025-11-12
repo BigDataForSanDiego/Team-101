@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import QRScanner from '../components/QRScanner';
+import FaceCapture from '../components/FaceCapture';
 
 export default function LoginPage() {
   const { user } = useAuth();
-  const [loginMethod, setLoginMethod] = useState<'qr'>('qr');
+  const [loginMethod, setLoginMethod] = useState<'qr' | 'face'>('qr');
   const [qrCode, setQrCode] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,7 +28,7 @@ export default function LoginPage() {
     setMessage('');
     
     try {
-      const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+      const response = await fetch('https://localhost:8000/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ qr_uid: code.trim() })
@@ -62,7 +63,7 @@ export default function LoginPage() {
   const handleFaceLogin = async (imageData: string) => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+      const response = await fetch('https://localhost:8000/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ face_image: imageData })
@@ -159,12 +160,32 @@ export default function LoginPage() {
           <p className="text-gray-500 mt-2">Access your profile</p>
         </div>
       
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-          <p className="text-sm text-blue-800 text-center font-medium">
-            📱 Show your QR code to the camera or enter it manually
-          </p>
+        <div className="flex gap-2 mb-6">
+          <button
+            type="button"
+            onClick={() => setLoginMethod('qr')}
+            className={`flex-1 py-3 rounded-lg font-semibold transition ${
+              loginMethod === 'qr'
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            📱 QR Code
+          </button>
+          <button
+            type="button"
+            onClick={() => setLoginMethod('face')}
+            className={`flex-1 py-3 rounded-lg font-semibold transition ${
+              loginMethod === 'face'
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            👤 Face ID
+          </button>
         </div>
 
+        {loginMethod === 'qr' ? (
         <form onSubmit={handleQRLogin} className="space-y-4">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Enter QR Code</label>
@@ -198,6 +219,25 @@ export default function LoginPage() {
             {loading ? 'Logging in...' : 'Login with QR Code'}
           </button>
         </form>
+        ) : (
+        <div className="space-y-4">
+          <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl border border-purple-200">
+            <div className="text-center mb-4">
+              <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-3">
+                <svg className="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
+                </svg>
+              </div>
+              <h3 className="text-lg font-bold text-gray-800">Face ID Login</h3>
+              <p className="text-sm text-gray-600 mt-1">Position your face in the camera</p>
+            </div>
+            <FaceCapture 
+              onCapture={handleFaceLogin} 
+              buttonText="Start Face Login"
+            />
+          </div>
+        </div>
+        )}
 
         {showScanner && (
           <QRScanner 
