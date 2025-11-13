@@ -3,11 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
+import { useEmployerAuth } from '@/app/context/EmployerAuthContext';
+import { useAdminAuth } from '@/app/context/AdminAuthContext';
 import QRScanner from '@/app/components/QRScanner';
 import FaceCapture from '@/app/components/FaceCapture';
 
 export default function ParticipantLogin() {
   const { login } = useAuth();
+  const { employer } = useEmployerAuth();
+  const { admin } = useAdminAuth();
   const router = useRouter();
   const [loginMethod, setLoginMethod] = useState<'qr' | 'face'>('qr');
   const [qrCode, setQrCode] = useState('');
@@ -30,7 +34,13 @@ export default function ParticipantLogin() {
       
       if (result.success) {
         login(result.participant);
-        window.location.href = '/participant/dashboard';
+        if (employer) {
+          router.push('/participant/documents');
+        } else if (admin) {
+          router.push(`/participant/profile/${result.participant.id}`);
+        } else {
+          router.push('/participant/announcements');
+        }
       } else {
         setMessage(result.message);
       }
@@ -63,7 +73,13 @@ export default function ParticipantLogin() {
       
       if (result.success) {
         login(result.participant);
-        window.location.href = '/participant/dashboard';
+        if (employer) {
+          router.push('/participant/documents');
+        } else if (admin) {
+          router.push(`/participant/profile/${result.participant.id}`);
+        } else {
+          router.push('/participant/announcements');
+        }
       } else {
         setMessage(result.message);
       }

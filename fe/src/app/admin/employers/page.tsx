@@ -98,13 +98,21 @@ export default function ManageEmployers() {
                     <p className="text-sm text-gray-600">{e.email}</p>
                     {e.contact_name && <p className="text-sm text-gray-600">Contact: {e.contact_name}</p>}
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    e.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                  }`}>
-                    {e.is_active ? 'Active' : 'Inactive'}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => router.push(`/admin/employers/edit/${e.id}`)}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm"
+                    >
+                      Edit
+                    </button>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      e.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {e.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
                 </div>
-              ))}
+              ))
             </div>
           )}
         </div>

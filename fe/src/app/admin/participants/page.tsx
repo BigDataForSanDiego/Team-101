@@ -66,6 +66,9 @@ export default function ViewParticipants() {
                   <p className="text-sm text-gray-600 mt-2">ID: {p.id}</p>
                   {p.phone && <p className="text-sm text-gray-600">Phone: {p.phone}</p>}
                   {p.email && <p className="text-sm text-gray-600">Email: {p.email}</p>}
+                  <Link href={`/admin/participants/edit/${p.id}`} className="mt-4 block text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
+                    Edit
+                  </Link>
                 </div>
               ))
             )}
