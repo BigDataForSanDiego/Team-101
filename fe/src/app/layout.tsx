@@ -47,6 +47,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                     </Link>
                     <button
                       onClick={() => {
+                        logout();
                         adminLogout();
                         window.location.href = '/';
                       }}
@@ -74,6 +75,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                     </Link>
                     <button
                       onClick={() => {
+                        logout();
                         employerLogout();
                         window.location.href = '/';
                       }}
@@ -91,18 +93,26 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   <>
                     <div className="flex items-center gap-2">
                       {admin && (
-                        <Link href="/admin/dashboard"
+                        <button
+                          onClick={() => {
+                            logout();
+                            window.location.href = '/admin/dashboard';
+                          }}
                           className="px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition"
                         >
                           ← Back to Admin
-                        </Link>
+                        </button>
                       )}
                       {employer && (
-                        <Link href="/employer/dashboard"
+                        <button
+                          onClick={() => {
+                            logout();
+                            window.location.href = '/employer/dashboard';
+                          }}
                           className="px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition"
                         >
                           ← Back to Employer
-                        </Link>
+                        </button>
                       )}
                       {user && (
                         <Link href={`/participant/profile/view/${user.id}`} className={`px-4 py-2 font-medium transition rounded-lg ${

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useEmployerAuth } from '@/app/context/EmployerAuthContext';
 
@@ -10,7 +10,15 @@ export default function EmployerLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
-  const { login } = useEmployerAuth();
+  const { employer, loading: authLoading, login } = useEmployerAuth();
+
+  useEffect(() => {
+    if (!authLoading && employer) {
+      router.replace('/employer/dashboard');
+    }
+  }, [employer, authLoading, router]);
+
+  if (authLoading || employer) return null;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

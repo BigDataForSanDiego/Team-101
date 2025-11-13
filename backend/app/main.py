@@ -15,6 +15,7 @@ from app.routers import certifications as certifications_router
 from app.routers import announcements as announcements_router
 from app.routers import reviews as reviews_router
 from app.routers import profile as profile_router
+from app.routers import heatmap as heatmap_router
 from app import models  # ensure metadata is populated
 
 @asynccontextmanager
@@ -45,6 +46,7 @@ app.include_router(certifications_router.router, prefix=settings.api_v1_prefix)
 app.include_router(announcements_router.router, prefix=settings.api_v1_prefix)
 app.include_router(reviews_router.router, prefix=settings.api_v1_prefix)
 app.include_router(profile_router.router, prefix=settings.api_v1_prefix)
+app.include_router(heatmap_router.router, prefix=settings.api_v1_prefix)
 
 @app.get("/")
 def root():

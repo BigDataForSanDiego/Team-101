@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/app/context/AdminAuthContext';
 
@@ -10,7 +10,15 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
-  const { login } = useAdminAuth();
+  const { admin, loading: authLoading, login } = useAdminAuth();
+
+  useEffect(() => {
+    if (!authLoading && admin) {
+      router.replace('/admin/dashboard');
+    }
+  }, [admin, authLoading, router]);
+
+  if (authLoading || admin) return null;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

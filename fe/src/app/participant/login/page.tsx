@@ -7,6 +7,7 @@ import { useEmployerAuth } from '@/app/context/EmployerAuthContext';
 import { useAdminAuth } from '@/app/context/AdminAuthContext';
 import QRScanner from '@/app/components/QRScanner';
 import FaceCapture from '@/app/components/FaceCapture';
+import BackButton from '@/app/components/BackButton';
 
 export default function ParticipantLogin() {
   const { login } = useAuth();
@@ -89,6 +90,12 @@ export default function ParticipantLogin() {
   return (
     <section className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
       <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-6">
+        {(admin || employer) && (
+          <BackButton 
+            href={admin ? '/admin/dashboard' : '/employer/dashboard'} 
+            label={admin ? 'Back to Dashboard' : 'Back to Dashboard'} 
+          />
+        )}
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-800">Individual Login</h1>
           <p className="text-gray-500 mt-2">Access your profile</p>
