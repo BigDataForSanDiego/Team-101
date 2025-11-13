@@ -1,139 +1,312 @@
-### 2025 BIG DATA HACKATHON PROPOSAL FORM
+# ReLink - Setup Guide
 
-#### Team Number: 101  
+ReLink is a digital identity platform that helps unhoused individuals build trust and access housing, healthcare, and employment through secure, verifiable digital credentials.
 
-#### Team Name: TEAM 101
+## Prerequisites
 
-#### Team Coordinator GitHub Username: (@vinaysurtani)
+- Python 3.9+
+- Node.js 18+ and npm
+- MySQL 8.0+
+- Git
 
-#### Team Members
+## Initial Setup
 
-- VINAY SURTANI (@vinaysurtani)
-- KEDAR HEGDE (@kedarnhegde)
-- SAHIL SANDESH KATLE (@sahil-katle)
-- KEVIN CHRISTOPHER SEBASTIAN(Kevin7hacky)
+### 1. Clone the Repository
 
-#### Your team's hackathon idea in One sentence:
-##### ReLink is a digital identity platform that helps unhoused individuals build trust, access housing, healthcare, and employment by giving them a secure, verifiable ID that showcases their participation in community programs, and their personal progress.
+```bash
+git clone git@github.com:BigDataForSanDiego/Team-101.git
+cd Team-101
+```
 
-## ReLink - A Digital Identity for Dignity and Opportunity
+### 2. Database Setup
 
-## Overview
+#### Install MySQL (if not already installed)
 
-**ReLink** is a digital identity and credentialing platform that empowers unhoused and under-documented individuals to access **housing, healthcare, and employment** by providing them with a **secure, verifiable digital profile** that records their participation in community programs, trainings, and verified achievements.
+**macOS:**
+```bash
+brew install mysql
+brew services start mysql
+```
 
-By turning fragmented personal histories into **trustworthy digital records**, ReLink rebuilds the bridge between individuals and opportunity.
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install mysql-server
+sudo systemctl start mysql
+```
 
----
+#### Create Database and User
 
-### Inspiration
+```bash
+mysql -u root -p
+```
 
-Thousands of people, including **veterans, displaced workers, and the unhoused**, struggle to prove their identity, skills, or work history, barriers that prevent them from obtaining jobs, housing, or even basic services.
+Run the following SQL commands:
 
-**ReLink** was born from a simple idea:  
-> *Everyone deserves a second chance and a way to prove they’re ready for it.*
+```sql
+CREATE DATABASE relink CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'relink'@'localhost' IDENTIFIED BY 'relinkpass';
+GRANT ALL PRIVILEGES ON relink.* TO 'relink'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+```
 
-We aim to create a **credible digital bridge** between people and the systems that serve them, enabling recognition, trust, and inclusion.
+### 3. Backend Setup
 
----
+#### Navigate to backend directory
 
-### System Design
+```bash
+cd backend
+```
 
-### **Workflow**
+#### Create and activate virtual environment
 
-#### 1. Onboarding
-- Conduct outreach or “ReLink Camps” in partnership with shelters, NGOs, and local authorities.  
-- Collect biometric or photo verification (fingerprint, facial ID, etc.).  
-- Assign each participant a **unique ReLink ID** and QR card.  
+**macOS/Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
-#### 2. Document Upload
-- Users can **digitize and store** essential personal documents (IDs, certificates, letters).  
-- Integration with **DigiLocker** or secure repositories for document management.  
-- Verified data is categorized, timestamped, and encrypted.
+**Windows:**
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
 
-#### 3. Skill Development & Training
-- Partner with local training programs and community centers.  
-- New skill certifications and completions are **automatically added** to user profiles.  
-- Introduce **gamified milestones and badges** to encourage participation.  
+#### Install dependencies
 
-#### 4. Building Credibility
-Each user’s profile evolves into a **digital resume** that includes:
-- Verified employment history  
-- Skill certifications  
-- Rehabilitation or training completions  
-- Endorsements or letters of recommendation  
-- Optional indicators like veteran or disability status  
+```bash
+pip install -r requirements.txt
+```
 
-A **credibility score** (stars/badges) summarizes verified progress and reliability.
+#### Configure environment variables
 
-#### 5. Access & Verification
-- Employers, landlords, or healthcare providers can **scan a QR code** to view a simplified trust profile (no sensitive data).  
-- Partners can verify credentials through **secure APIs**.  
+The `.env` file should already exist with:
 
-#### 6. Deployment & Scale
-- Pilot in one city to test user flow and integrations.  
-- Long-term goal: integrate with **HMIS (Homeless Management Information System)** or equivalent public datasets.  
+```env
+APP_NAME="ReLink Backend"
+ENV="dev"
+API_V1_PREFIX="/api/v1"
+DATABASE_URL="mysql+mysqlconnector://relink:relinkpass@127.0.0.1:3306/relink"
+```
 
+If you changed the database credentials, update the `DATABASE_URL` accordingly.
 
-## Impact
+#### Initialize database tables
 
-ReLink turns *recognition* into empowerment.  
-It helps individuals without formal IDs or records to:
-- Access housing and employment  
-- Receive consistent healthcare  
-- Regain dignity and societal trust  
+The application will automatically create tables on first run. To manually run migrations:
 
-For organizations, it provides a **data-driven, verifiable ecosystem** for social inclusion.
+```bash
+python migrate_db.py
+```
 
----
+#### Seed database with sample data
 
-## Vision
+Populate the database with sample organizations, admins, participants, employers, announcements, certifications, and training sessions:
 
-> *To create a trusted, portable identity for every individual, enabling access, recognition, and reintegration through verified digital credibility.*
+```bash
+python seed_db.py
+```
 
-ReLink redefines identity not as a document, but as **proof of growth, trust, and belonging.**
+This will create:
+- 2 Organizations
+- 3 Admin users
+- 5 Participants
+- 3 Employers
+- 4 Announcements
+- 5 Certifications
+- 5 Training sessions
+- 8 Training registrations
 
----
+**Sample credentials after seeding:**
 
-## Future Roadmap
+Admin Users:
+- `admin@relink.com` / `admin123`
+- `staff@relink.com` / `staff123`
+- `admin2@relink.com` / `admin123`
 
-- MVP: Centralized ID creation and verification  
-- Integration with skill training APIs and NGOs  
-- Healthcare record linking (with consent-based access)  
-- Predictive analytics for employment matching  
-- County-wide rollout and policy integration  
+Employers:
+- `robert@techsolutions.com` / `employer123`
+- `lisa@greenvalley.com` / `employer123`
+- `james@cityconstruction.com` / `employer123`
 
----
+> **Note:** Change passwords immediately after first login in production!
+> **Note:** If you prefer to start with an empty database, skip the seed step and manually add data through the UI.
 
-### Tagline
-> **ReLink - Rebuilding Trust, One Digital Identity at a Time.**
+#### Start the backend server
 
-#### A visual
-![bigdatahackathon4sd](https://github.com/BigDataForSanDiego/bigdataforsandiego.github.io/blob/main/images/big_data_2025_clip.png?raw=true "Big Data Hackathon for San Diego 2025")
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
 
-<img height="10%" width="50%" alt="HDMA" src="https://github.com/BigDataForSanDiego/bigdataforsandiego.github.io/blob/main/templates/img/hdma2.png?raw=true"> 
+The backend API will be available at `http://localhost:8000`
 
+API documentation: `http://localhost:8000/docs`
 
-#### Hackathon Five CORE Themes. `CHECK ONE or TWO QUESTIONS`.
-- [ ] Access to Shelter and Resources
-> - Solutions to improve on-demand access and availability of shelters, food banks, medical aid, and social services for homeless individuals.
-> - Question: How can we develop technological solutions that provide real-time, on-demand information updates on available shelters, food banks, hygiene stations, medical clinics, and social services for people experiencing homelessness?
-- [ ] Health and Mental Wellness Support
-> - Tools to provide remote mental health support, connect to mobile healthcare providers, or manage chronic conditions common in homeless populations using mobile devices.
-> - Question: How can we create tools or mobile applications that deliver remote mental health care, help manage chronic health conditions, or connect unhoused individuals with trusted health professionals?
-- [x] Housing and Employment Pathways
-> - Web platforms that connect homeless individuals to affordable housing opportunities, job training programs, or employment resources.
-> - Question: What digital web platforms or systems can help individuals experiencing homelessness navigate the path toward stable housing and employment, including skills training, job placement, and housing referrals? 
-- [ ] Safety and Community Engagement
-> - Solutions to increase personal safety, prevent violence, and foster community support and empathy networks for homeless people.
-> - Question: How might we design technological solutions that improve safety for unhoused individuals, reduce violence, and build empathy and community support through storytelling, social engagement, or civic partnerships?
-- [ ] Data-Driven Policy and User-Centered Resource Planning
-> - Use of geospatial and demographic data to better understand homeless population trends, optimize resource allocation, and support policy advocacy.
-> - Question: How can we use geospatial data, census data, and AI to map trends in homelessness, identify service gaps, and support equitable decision making and public advocacy
-- [ ] Other Possible Topics
-> - [x] Improving digital equity and resource accessibility
-> - Helping youth homelessness and at-risk populations
-> - Providing mobile health clinics and telehealth expansion kits
-> - Increasing climate resilience for unhoused communities
-> - Others
+### 4. Frontend Setup
 
+Open a new terminal window/tab.
+
+#### Navigate to frontend directory
+
+```bash
+cd fe
+```
+
+#### Install dependencies
+
+```bash
+npm install
+```
+
+#### Configure environment variables
+
+The `.env.local` file should already exist. If not, create it:
+
+```env
+API_BASE_URL=http://localhost:8000
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+#### Start the frontend development server
+
+```bash
+npm run dev
+```
+
+The frontend will be available at `http://localhost:3000`
+
+## Usage
+
+### First Time Setup
+
+1. **Login as Admin**
+   - Navigate to `http://localhost:3000`
+   - Click "Admin Login"
+   - Use credentials: `admin@relink.com` / `admin123` (if you ran the seed script)
+
+2. **Add Participants**
+   - From admin dashboard, click "Add New Individual"
+   - Fill in participant details
+   - Upload face image for biometric verification
+   - System generates unique ReLink ID and QR code
+
+3. **Add Employers** (Optional)
+   - Create employer accounts from admin panel
+   - Employers can view participant profiles and add reviews
+
+4. **Manage Documents, Certifications, and Trainings**
+   - Upload documents for participants
+   - Add skill certifications
+   - Track training completions
+
+### Running the Application
+
+Always ensure both servers are running:
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+python seed_db.py  # Optional: Only needed once to populate sample data
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd fe
+npm run dev
+```
+
+## Project Structure
+
+```
+Team-101/
+├── backend/              # FastAPI backend
+│   ├── app/
+│   │   ├── routers/     # API endpoints
+│   │   ├── models.py    # Database models
+│   │   ├── schemas.py   # Pydantic schemas
+│   │   └── main.py      # Application entry point
+│   ├── uploads/         # Uploaded files storage
+│   └── requirements.txt # Python dependencies
+├── fe/                  # Next.js frontend
+│   ├── src/
+│   │   └── app/        # Pages and components
+│   └── package.json    # Node dependencies
+└── README.md           # This file
+```
+
+## Key Features
+
+- **Digital Identity Management**: Secure participant profiles with biometric verification
+- **Document Storage**: Upload and manage personal documents
+- **Skill Tracking**: Record certifications and training completions
+- **Employer Reviews**: Verified testimonials from employers
+- **QR Code Access**: Quick profile verification via QR codes
+- **Role-Based Access**: Separate interfaces for admins, employers, and participants
+
+## Troubleshooting
+
+### Database Connection Issues
+
+- Verify MySQL is running: `mysql -u relink -p`
+- Check credentials in `backend/.env`
+- Ensure database exists: `SHOW DATABASES;`
+
+### Backend Won't Start
+
+- Activate virtual environment
+- Install dependencies: `pip install -r requirements.txt`
+- Check port 8000 is not in use: `lsof -i :8000`
+
+### Frontend Won't Start
+
+- Clear cache: `rm -rf .next`
+- Reinstall dependencies: `rm -rf node_modules && npm install`
+- Check port 3000 is not in use: `lsof -i :3000`
+
+### Face Recognition Issues
+
+- Ensure OpenCV and DeepFace are properly installed
+- Check uploaded images are clear and contain faces
+- Verify TensorFlow installation: `python -c "import tensorflow; print(tensorflow.__version__)"`
+
+## Development
+
+### Adding New Features
+
+1. Backend: Add routes in `backend/app/routers/`
+2. Frontend: Add pages in `fe/src/app/`
+3. Update models in `backend/app/models.py` if database changes needed
+
+### Database Migrations
+
+After modifying models, create and run migrations:
+
+```bash
+cd backend
+python migrate_db.py
+```
+
+## Production Deployment
+
+For production deployment:
+
+1. Change default admin password
+2. Use strong database credentials
+3. Set `ENV=production` in backend `.env`
+4. Use proper SSL certificates
+5. Configure CORS settings appropriately
+6. Use production-grade database (not localhost)
+7. Set up proper backup strategies
+
+## Support
+
+For issues or questions, refer to:
+- Project proposal: `README-2.md`
+- API documentation: `http://localhost:8000/docs`
+
+## License
+
+Big Data Hackathon 2025 - Team 101
