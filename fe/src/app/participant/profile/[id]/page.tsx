@@ -3,15 +3,17 @@
 import { useState, useEffect } from 'react';
 import { useAdminAuth } from '@/app/context/AdminAuthContext';
 import { useRouter, useParams } from 'next/navigation';
+import Toast from '@/app/components/Toast';
 
 export default function ParticipantProfilePage() {
   const { admin } = useAdminAuth();
   const router = useRouter();
   const params = useParams();
   const id = params.id;
-  const [formData, setFormData] = useState({ display_name: '', phone: '', email: '', preferred_contact: 'NONE' });
+  const [formData, setFormData] = useState({ display_name: '', phone: '', email: '', preferred_contact: 'NONE', gender: 'UNKNOWN', veteran_status: false, disability: false });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
 
   useEffect(() => {
     if (!admin) {
@@ -25,7 +27,10 @@ export default function ParticipantProfilePage() {
           display_name: data.display_name,
           phone: data.phone || '',
           email: data.email || '',
-          preferred_contact: data.preferred_contact
+          preferred_contact: data.preferred_contact,
+          gender: data.gender || 'UNKNOWN',
+          veteran_status: data.veteran_status || false,
+          disability: data.disability || false
         });
         setLoading(false);
       });
@@ -43,13 +48,13 @@ export default function ParticipantProfilePage() {
       });
 
       if (res.ok) {
-        alert('Profile updated successfully');
+        setToast({ message: 'Profile updated successfully!', type: 'success' });
+        setTimeout(() => router.push(`/participant/profile/view/${id}`), 1000);
       } else {
-        const error = await res.json();
-        alert(error.detail || 'Failed to update profile');
+        setToast({ message: 'Failed to update profile', type: 'error' });
       }
     } catch (error) {
-      alert('Failed to update profile');
+      setToast({ message: 'Failed to update profile', type: 'error' });
     } finally {
       setSaving(false);
     }
@@ -60,6 +65,7 @@ export default function ParticipantProfilePage() {
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Edit Profile</h1>
@@ -107,6 +113,42 @@ export default function ParticipantProfilePage() {
                 <option value="SMS">SMS</option>
                 <option value="EMAIL">Email</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+              <select
+                value={formData.gender}
+                onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+              >
+                <option value="UNKNOWN">Prefer not to say</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+                <option value="NON_BINARY">Non-Binary</option>
+              </select>
+            </div>
+
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.veteran_status}
+                  onChange={(e) => setFormData(prev => ({ ...prev, veteran_status: e.target.checked }))}
+                  className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                />
+                <span className="text-sm font-medium text-gray-700">Veteran Status</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.disability}
+                  onChange={(e) => setFormData(prev => ({ ...prev, disability: e.target.checked }))}
+                  className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                />
+                <span className="text-sm font-medium text-gray-700">Disability</span>
+              </label>
             </div>
 
             <button

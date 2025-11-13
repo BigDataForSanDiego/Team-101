@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAdminAuth } from '@/app/context/AdminAuthContext';
 import { useRouter } from 'next/navigation';
+import Toast from '@/app/components/Toast';
 
 export default function AdminProfilePage() {
   const { admin } = useAdminAuth();
@@ -10,6 +11,7 @@ export default function AdminProfilePage() {
   const [formData, setFormData] = useState({ email: '', phone: '' });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
 
   useEffect(() => {
     if (!admin) {
@@ -37,13 +39,13 @@ export default function AdminProfilePage() {
       });
 
       if (res.ok) {
-        alert('Profile updated successfully');
+        setToast({ message: 'Profile updated successfully!', type: 'success' });
+        setTimeout(() => router.push('/admin/dashboard'), 1000);
       } else {
-        const error = await res.json();
-        alert(error.detail || 'Failed to update profile');
+        setToast({ message: 'Failed to update profile', type: 'error' });
       }
     } catch (error) {
-      alert('Failed to update profile');
+      setToast({ message: 'Failed to update profile', type: 'error' });
     } finally {
       setSaving(false);
     }
@@ -53,6 +55,7 @@ export default function AdminProfilePage() {
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-12 px-4">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">My Profile</h1>

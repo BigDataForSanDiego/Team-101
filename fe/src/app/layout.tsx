@@ -104,10 +104,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                           ← Back to Employer
                         </Link>
                       )}
-                      {admin && user && (
-                        <Link href={`/participant/profile/${user.id}`} className={`px-4 py-2 font-medium transition rounded-lg ${
-                          pathname.startsWith('/participant/profile') ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
-                        }`} style={pathname.startsWith('/participant/profile') ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>
+                      {user && (
+                        <Link href={`/participant/profile/view/${user.id}`} className={`px-4 py-2 font-medium transition rounded-lg ${
+                          pathname.startsWith('/participant/profile/view') ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
+                        }`} style={pathname.startsWith('/participant/profile/view') ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>
                           Profile
                         </Link>
                       )}

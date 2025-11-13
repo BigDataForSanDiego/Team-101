@@ -21,6 +21,9 @@ class ParticipantProfileUpdate(BaseModel):
     phone: str | None = None
     email: str | None = None
     preferred_contact: str | None = None
+    gender: str | None = None
+    veteran_status: bool | None = None
+    disability: bool | None = None
 
 @router.get("/admin/{admin_id}")
 def get_admin_profile(admin_id: int, db: Session = Depends(get_db)):
@@ -128,6 +131,12 @@ def update_participant_profile(participant_id: int, payload: ParticipantProfileU
         participant.email = payload.email
     if payload.preferred_contact:
         participant.preferred_contact = payload.preferred_contact
+    if payload.gender:
+        participant.gender = payload.gender
+    if payload.veteran_status is not None:
+        participant.veteran_status = payload.veteran_status
+    if payload.disability is not None:
+        participant.disability = payload.disability
     
     db.commit()
     db.refresh(participant)

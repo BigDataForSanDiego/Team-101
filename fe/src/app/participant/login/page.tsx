@@ -34,10 +34,8 @@ export default function ParticipantLogin() {
       
       if (result.success) {
         login(result.participant);
-        if (employer) {
-          router.push('/participant/documents');
-        } else if (admin) {
-          router.push(`/participant/profile/${result.participant.id}`);
+        if (employer || admin) {
+          router.push(`/participant/profile/view/${result.participant.id}`);
         } else {
           router.push('/participant/announcements');
         }
@@ -73,10 +71,8 @@ export default function ParticipantLogin() {
       
       if (result.success) {
         login(result.participant);
-        if (employer) {
-          router.push('/participant/documents');
-        } else if (admin) {
-          router.push(`/participant/profile/${result.participant.id}`);
+        if (employer || admin) {
+          router.push(`/participant/profile/view/${result.participant.id}`);
         } else {
           router.push('/participant/announcements');
         }

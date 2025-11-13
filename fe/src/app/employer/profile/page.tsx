@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useEmployerAuth } from '@/app/context/EmployerAuthContext';
 import { useRouter } from 'next/navigation';
+import Toast from '@/app/components/Toast';
 
 export default function EmployerProfilePage() {
   const { employer } = useEmployerAuth();
@@ -10,6 +11,7 @@ export default function EmployerProfilePage() {
   const [formData, setFormData] = useState({ company_name: '', contact_name: '', email: '', phone: '' });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
 
   useEffect(() => {
     if (!employer) {
@@ -42,13 +44,13 @@ export default function EmployerProfilePage() {
       });
 
       if (res.ok) {
-        alert('Profile updated successfully');
+        setToast({ message: 'Profile updated successfully!', type: 'success' });
+        setTimeout(() => router.push('/employer/dashboard'), 1000);
       } else {
-        const error = await res.json();
-        alert(error.detail || 'Failed to update profile');
+        setToast({ message: 'Failed to update profile', type: 'error' });
       }
     } catch (error) {
-      alert('Failed to update profile');
+      setToast({ message: 'Failed to update profile', type: 'error' });
     } finally {
       setSaving(false);
     }
@@ -58,6 +60,7 @@ export default function EmployerProfilePage() {
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 py-12 px-4">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">My Profile</h1>

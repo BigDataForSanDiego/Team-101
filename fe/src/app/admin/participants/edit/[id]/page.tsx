@@ -44,14 +44,10 @@ export default function EditParticipantPage() {
       });
 
       if (res.ok) {
-        alert('Individual updated successfully');
         router.push('/admin/participants');
-      } else {
-        const error = await res.json();
-        alert(error.detail || 'Failed to update individual');
       }
     } catch (error) {
-      alert('Failed to update individual');
+      console.error('Failed to update individual');
     } finally {
       setSaving(false);
     }

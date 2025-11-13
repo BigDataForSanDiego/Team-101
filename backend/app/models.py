@@ -82,6 +82,9 @@ class Participant(Base):
         default="NONE",
         nullable=False,
     )
+    gender: Mapped[str] = mapped_column(String(20), default="UNKNOWN", nullable=False)
+    veteran_status: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    disability: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
     # QR strategy: store only the stable, unique UID; generate/serve images on demand
     qr_uid: Mapped[str] = mapped_column(String(26), nullable=False, index=True)

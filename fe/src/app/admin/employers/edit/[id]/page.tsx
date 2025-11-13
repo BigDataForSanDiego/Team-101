@@ -44,14 +44,10 @@ export default function EditEmployerPage() {
       });
 
       if (res.ok) {
-        alert('Employer updated successfully');
         router.push('/admin/employers');
-      } else {
-        const error = await res.json();
-        alert(error.detail || 'Failed to update employer');
       }
     } catch (error) {
-      alert('Failed to update employer');
+      console.error('Failed to update employer');
     } finally {
       setSaving(false);
     }
