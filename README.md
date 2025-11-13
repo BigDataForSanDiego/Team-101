@@ -11,7 +11,7 @@
 - VINAY SURTANI (@vinaysurtani)
 - KEDAR HEGDE (@kedarnhegde)
 - SAHIL SANDESH KATLE (@sahil-katle)
-- KEVIN CHRISTOPHER SEBASTIAN
+- KEVIN CHRISTOPHER SEBASTIAN(Kevin7hacky)
 
 #### Your team's hackathon idea in One sentence:
 ##### ReLink is a digital identity platform that helps unhoused individuals build trust, access housing, healthcare, and employment by giving them a secure, verifiable ID that showcases their participation in community programs, and their personal progress.
