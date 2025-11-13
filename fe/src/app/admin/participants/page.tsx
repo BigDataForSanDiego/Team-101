@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+
 import { useAdminAuth } from '@/app/context/AdminAuthContext';
 
 export default function ViewParticipants() {

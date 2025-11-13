@@ -29,7 +29,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         {!isHomePage && (
           <header className="bg-white shadow-md">
             <nav className="mx-auto max-w-7xl flex items-center justify-between px-6 py-4">
-              <Link href={isAdminRoute ? "/admin/dashboard" : isEmployerRoute ? "/employer/dashboard" : "/participant/dashboard"} className="flex items-center">
+              <Link href={isAdminRoute ? "/admin/dashboard" : isEmployerRoute ? "/employer/dashboard" : "/participant/announcements"} className="flex items-center">
                 <img src="/logo.png" alt="ReLink Logo" className="h-10 w-30" />
               </Link>
               <div className="flex items-center gap-4">
@@ -39,6 +39,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                       pathname === '/admin/dashboard' ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
                     }`} style={pathname === '/admin/dashboard' ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>
                       Home
+                    </Link>
+                    <Link href="/admin/profile" className={`px-4 py-2 font-medium transition rounded-lg ${
+                      pathname === '/admin/profile' ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
+                    }`} style={pathname === '/admin/profile' ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>
+                      Profile
                     </Link>
                     <button
                       onClick={() => {
@@ -61,6 +66,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                       pathname === '/employer/dashboard' ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
                     }`} style={pathname === '/employer/dashboard' ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>
                       Home
+                    </Link>
+                    <Link href="/employer/profile" className={`px-4 py-2 font-medium transition rounded-lg ${
+                      pathname === '/employer/profile' ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
+                    }`} style={pathname === '/employer/profile' ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>
+                      Profile
                     </Link>
                     <button
                       onClick={() => {
@@ -94,21 +104,25 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                           ← Back to Employer
                         </Link>
                       )}
-                      <Link href="/participant/dashboard" className={`px-4 py-2 font-medium transition rounded-lg ${
-                        pathname === '/participant/dashboard' ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
-                      }`} style={pathname === '/participant/dashboard' ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>
-                        Dashboard
-                      </Link>
+                      {user && (
+                        <Link href={`/participant/profile/view/${user.id}`} className={`px-4 py-2 font-medium transition rounded-lg ${
+                          pathname.startsWith('/participant/profile/view') ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
+                        }`} style={pathname.startsWith('/participant/profile/view') ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>
+                          Profile
+                        </Link>
+                      )}
                       <Link href="/participant/documents" className={`px-4 py-2 font-medium transition rounded-lg ${
                         pathname === '/participant/documents' ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
                       }`} style={pathname === '/participant/documents' ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>
                         Documents
                       </Link>
-                      <Link href="/participant/announcements" className={`px-4 py-2 font-medium transition rounded-lg ${
-                        pathname === '/participant/announcements' ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
-                      }`} style={pathname === '/participant/announcements' ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>
-                        Announcements
-                      </Link>
+                      {admin && (
+                        <Link href="/participant/announcements" className={`px-4 py-2 font-medium transition rounded-lg ${
+                          pathname === '/participant/announcements' ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
+                        }`} style={pathname === '/participant/announcements' ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>
+                          Announcements
+                        </Link>
+                      )}
                       <Link href="/participant/certifications" className={`px-4 py-2 font-medium transition rounded-lg ${
                         pathname === '/participant/certifications' ? 'text-white shadow-md' : 'text-gray-700 hover:bg-gray-50'
                       }`} style={pathname === '/participant/certifications' ? { backgroundColor: 'rgba(0, 0, 58, 0.95)' } : {}}>

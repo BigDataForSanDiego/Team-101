@@ -7,7 +7,7 @@ export default function Home() {
     <section className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
       <div className="max-w-6xl mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h1 className="text-6xl font-bold text-gray-800 mb-4">ReLink</h1>
+          <img src="/logo.png" alt="ReLink Logo" className="h-20 mx-auto mb-4" />
           <p className="text-xl text-gray-600 mb-2">Rebuilding Trust, One Digital Identity at a Time</p>
           <p className="text-gray-500">A digital identity platform for unhoused individuals</p>
         </div>
@@ -39,26 +39,13 @@ export default function Home() {
         </div>
 
         <div className="mt-12 bg-white rounded-2xl shadow-xl p-8 max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">About ReLink</h3>
-          <p className="text-gray-600 mb-4">
-            ReLink is a digital identity and credentialing platform that empowers unhoused and under-documented 
-            individuals to access housing, healthcare, and employment by providing them with a secure, verifiable 
-            digital profile.
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">Our Inspiration</h3>
+          <p className="text-gray-600 leading-relaxed mb-4">
+            ReLink was born from a moment that changed everything. At a Social Security office, our team member watched as a homeless individual was turned away, not because he didn't deserve help, but because he couldn't book an appointment online or call a phone number. He had neither a phone nor internet access.
           </p>
-          <div className="grid md:grid-cols-3 gap-4 mt-6">
-            <div className="text-center p-4">
-              <div className="text-3xl font-bold text-blue-600 mb-2">🏠</div>
-              <p className="text-sm text-gray-600">Access to Housing</p>
-            </div>
-            <div className="text-center p-4">
-              <div className="text-3xl font-bold text-green-600 mb-2">💼</div>
-              <p className="text-sm text-gray-600">Employment Opportunities</p>
-            </div>
-            <div className="text-center p-4">
-              <div className="text-3xl font-bold text-purple-600 mb-2">🏥</div>
-              <p className="text-sm text-gray-600">Healthcare Services</p>
-            </div>
-          </div>
+          <p className="text-gray-700 leading-relaxed font-medium">
+            That day revealed a painful truth: the systems meant to help often require the very resources our most vulnerable neighbors lack. ReLink bridges this gap, providing a digital identity platform that empowers unhoused individuals to access housing, employment, and essential services, without requiring personal devices or internet access. Because dignity and opportunity shouldn't depend on owning a smartphone.
+          </p>
         </div>
       </div>
     </section>
