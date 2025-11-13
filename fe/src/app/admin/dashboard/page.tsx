@@ -27,6 +27,18 @@ export default function AdminDashboard() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Link href="/admin/heatmap">
+            <div className="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition cursor-pointer group">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-red-200 transition">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-bold text-gray-800 mb-2">Heat Map</h2>
+              <p className="text-gray-600 text-sm">View homeless population distribution</p>
+            </div>
+          </Link>
+
           <Link href="/participant/login">
             <div className="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition cursor-pointer group">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-200 transition">

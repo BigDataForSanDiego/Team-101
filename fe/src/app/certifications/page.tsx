@@ -57,8 +57,8 @@ export default function CertificationsPage() {
     <section className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 py-12 px-4">
       <div className="max-w-6xl mx-auto space-y-6">
         <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">🏆 Certifications & Reviews</h1>
-          <p className="text-gray-600 mb-6">Your achievements and employer reviews (Read-only)</p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">🏆 Certifications</h1>
+          <p className="text-gray-600 mb-6">Your achievements</p>
 
           {loading ? (
             <div className="text-center py-12">

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/app/context/AdminAuthContext';
 import FaceCapture from '@/app/components/FaceCapture';
+import BackButton from '@/app/components/BackButton';
 
 export default function RegisterParticipant() {
   const { admin } = useAdminAuth();
@@ -70,17 +71,8 @@ export default function RegisterParticipant() {
   return (
     <section className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
       <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-800">Register Individual</h1>
-          <button
-            onClick={() => router.push('/admin/dashboard')}
-            className="text-gray-600 hover:text-gray-800"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+        <BackButton href="/admin/dashboard" label="Back to Dashboard" />
+        <h1 className="text-3xl font-bold text-gray-800">Register Individual</h1>
       
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

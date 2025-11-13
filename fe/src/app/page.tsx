@@ -1,8 +1,27 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAdminAuth } from '@/app/context/AdminAuthContext';
+import { useEmployerAuth } from '@/app/context/EmployerAuthContext';
 
 export default function Home() {
+  const { admin, loading: adminLoading } = useAdminAuth();
+  const { employer, loading: employerLoading } = useEmployerAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!adminLoading && !employerLoading) {
+      if (admin) {
+        router.replace('/admin/dashboard');
+      } else if (employer) {
+        router.replace('/employer/dashboard');
+      }
+    }
+  }, [admin, employer, adminLoading, employerLoading, router]);
+
+  if (adminLoading || employerLoading || admin || employer) return null;
   return (
     <section className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
       <div className="max-w-6xl mx-auto px-4 py-16">

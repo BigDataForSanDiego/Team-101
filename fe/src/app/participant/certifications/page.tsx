@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
+import { useAdminAuth } from '@/app/context/AdminAuthContext';
 
 interface Certification {
   id: number;
@@ -13,8 +14,12 @@ interface Certification {
 
 export default function CertificationsPage() {
   const { user } = useAuth();
+  const { admin } = useAdminAuth();
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAddCert, setShowAddCert] = useState(false);
+  const [newCert, setNewCert] = useState({ title: '', issuer: '', description: '', issue_date: '' });
+  const [certLoading, setCertLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -39,6 +44,27 @@ export default function CertificationsPage() {
     }
   };
 
+  const handleAddCertification = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCertLoading(true);
+    try {
+      const response = await fetch('http://localhost:8000/api/v1/certifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...newCert, participant_id: user.id })
+      });
+      if (response.ok) {
+        setNewCert({ title: '', issuer: '', description: '', issue_date: '' });
+        setShowAddCert(false);
+        fetchCertifications();
+      }
+    } catch (error) {
+      console.error('Failed to add certification');
+    } finally {
+      setCertLoading(false);
+    }
+  };
+
   if (!user) {
     return (
       <section className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 py-12 px-4">
@@ -57,8 +83,76 @@ export default function CertificationsPage() {
     <section className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 py-12 px-4">
       <div className="max-w-6xl mx-auto space-y-6">
         <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">🏆 Certifications & Reviews</h1>
-          <p className="text-gray-600 mb-6">Your achievements and employer reviews (Read-only)</p>
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">🏆 Certifications</h1>
+              <p className="text-gray-600">Your achievements</p>
+            </div>
+            {admin && (
+              <button
+                onClick={() => setShowAddCert(!showAddCert)}
+                className="px-4 py-2 text-white rounded-lg transition"
+                style={{ backgroundColor: showAddCert ? 'rgba(145, 20, 35, 0.95)' : 'rgba(34, 197, 94, 1)' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = showAddCert ? 'rgba(160, 30, 45, 0.9)' : 'rgba(22, 163, 74, 1)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = showAddCert ? 'rgba(145, 20, 35, 0.95)' : 'rgba(34, 197, 94, 1)'}
+              >
+                {showAddCert ? 'Cancel' : '+ Add Certification'}
+              </button>
+            )}
+          </div>
+
+          {showAddCert && (
+            <form onSubmit={handleAddCertification} className="bg-gray-50 rounded-lg p-6 mb-6">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+                  <input
+                    type="text"
+                    value={newCert.title}
+                    onChange={(e) => setNewCert({ ...newCert, title: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Issuer *</label>
+                  <input
+                    type="text"
+                    value={newCert.issuer}
+                    onChange={(e) => setNewCert({ ...newCert, issuer: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Issue Date *</label>
+                  <input
+                    type="date"
+                    value={newCert.issue_date}
+                    onChange={(e) => setNewCert({ ...newCert, issue_date: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  <input
+                    type="text"
+                    value={newCert.description}
+                    onChange={(e) => setNewCert({ ...newCert, description: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 text-gray-900"
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                disabled={certLoading}
+                className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+              >
+                {certLoading ? 'Adding...' : 'Add Certification'}
+              </button>
+            </form>
+          )}
 
           {loading ? (
             <div className="text-center py-12">

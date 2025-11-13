@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/app/context/AdminAuthContext';
+import BackButton from '@/app/components/BackButton';
 
 export default function ManageEmployers() {
   const { admin, loading } = useAdminAuth();
@@ -66,16 +67,12 @@ export default function ManageEmployers() {
     <section className="min-h-screen bg-gradient-to-br from-teal-50 to-green-100 py-12 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
+          <BackButton href="/admin/dashboard" label="Back to Dashboard" />
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-gray-800">Manage Employers</h1>
-            <div className="flex gap-3">
-              <button onClick={() => setShowModal(true)} className="px-4 py-2 text-white rounded-lg transition" style={{ backgroundColor: 'rgba(0, 0, 58, 0.95)' }}>
-                + Add Employer
-              </button>
-              <button onClick={() => router.push('/admin/dashboard')} className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
-                Back
-              </button>
-            </div>
+            <button onClick={() => setShowModal(true)} className="px-4 py-2 text-white rounded-lg transition" style={{ backgroundColor: 'rgba(0, 0, 58, 0.95)' }}>
+              + Add Employer
+            </button>
           </div>
         </div>
 
