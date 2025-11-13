@@ -112,7 +112,7 @@ export default function ManageEmployers() {
                     </span>
                   </div>
                 </div>
-              ))
+              ))}
             </div>
           )}
         </div>
