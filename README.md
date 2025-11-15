@@ -237,6 +237,12 @@ Team-101/
 └── README.md           # This file
 ```
 
+## ER Diagram 
+
+<img width="3994" height="3818" alt="ER_Diagram" src="https://github.com/user-attachments/assets/167268df-7202-4b8d-b79e-28b4cbb2e685" />
+
+
+
 ## Key Features
 
 - **Digital Identity Management**: Secure participant profiles with biometric verification
